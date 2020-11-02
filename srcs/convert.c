@@ -1,27 +1,28 @@
-#include "convert.h"
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   convert.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeheo <jeheo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/01 17:08:43 by jeheo             #+#    #+#             */
+/*   Updated: 2020/11/01 20:32:40 by jeheo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-llong	ft_atoi(char *str)
+#include "convert.h"
+
+t_llong	ft_atoi(char *str)
 {
-	llong	value;
-	int		sign;
+	t_llong	value;
 
 	value = 0;
-	sign = 1;
-	// while (is_space(*str))
-	// 	str++;
-	// while (is_operator(*str))
-	// {
-	// 	if (*str == '-')
-	// 		sign *= -1;
-	// 	str++;
-	// }
 	while (is_numeric(*str))
 	{
 		value = 10 * value + *str - '0';
 		str++;
 	}
-	return (sign * value);
+	return (value);
 }
 
 void	skip_zero(char **str)
@@ -32,38 +33,36 @@ void	skip_zero(char **str)
 		*str = "0";
 }
 
-ulong	*ft_atoi_arr(char *str, uint *i_size)
+t_uint	get_unit_len(t_uint len)
 {
-	ulong *i_value;
-	uint unit_len;
-	uint len;
-	uint diff;
-	uint i;
-	uint j;
+	return (len % UNIT != 0 ? len + UNIT - (len % UNIT) : len);
+}
+
+int		*ft_atoi_arr(char *str, t_uint *i_size)
+{
+	int		*i_value;
+	t_uint	len;
+	t_uint	diff;
+	t_uint	i;
+	t_uint	j;
 
 	skip_zero(&str);
 	len = ft_strlen(str);
-	unit_len = len % UNIT != 0 ? len + UNIT - (len % UNIT) : len;
-	*i_size = unit_len / UNIT;
-	i_value = (ulong *)malloc(*i_size * sizeof(ulong));
-	diff = unit_len - len;
-	i = 1;
-	j = diff;
-	while (i <= *i_size)
-	{
+	*i_size = get_unit_len(len) / UNIT;
+	i_value = (int *)malloc(*i_size * sizeof(int));
+	diff = get_unit_len(len) - len;
+	i = 0;
+	while (++i <= *i_size)
 		i_value[i - 1] = 0;
-		i++;
-	}
-	i = 1;
-	while (i <= *i_size)
+	i = 0;
+	j = diff;
+	while (++i <= *i_size)
 	{
 		while (j < UNIT * i)
 		{
 			i_value[i - 1] = i_value[i - 1] * 10 + str[j - diff] - '0';
 			j++;
 		}
-		i++;
 	}
-	// printf("%u", i_value[0]);
 	return (i_value);
 }

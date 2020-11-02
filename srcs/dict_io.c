@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dict_io.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeheo <jeheo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/01 17:08:38 by jeheo             #+#    #+#             */
+/*   Updated: 2020/11/01 22:06:32 by jeheo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdio.h>
 
 #include "dict.h"
@@ -7,17 +19,17 @@
 #include "is.h"
 #include "ft_realloc.h"
 
-char		*read_line(int fd, uint *len, t_status *status)
+char		*read_line(int fd, t_uint *len, t_status *status)
 {
 	char	buffer[BYTE_1];
 	char	*line;
-	uint	new_bytes;
+	t_uint	new_bytes;
 
 	*len = 0;
 	new_bytes = read(fd, buffer, BYTE_1);
 	while (new_bytes > 0)
 	{
-		line = ft_realloc_str(line, buffer, *len, *len + new_bytes);
+		line = realloc_str(line, buffer, *len, *len + new_bytes);
 		*len += new_bytes;
 		if (buffer[0] == '\n')
 			break ;
@@ -28,11 +40,11 @@ char		*read_line(int fd, uint *len, t_status *status)
 	return (line);
 }
 
-t_status	process_line(uint len, char *line, t_entry *entry)
+t_status	process_line(t_uint len, char *line, t_entry *entry)
 {
-	uint	idx;
+	t_uint	idx;
 	char	*value_str;
-	uint	size;
+	t_uint	size;
 
 	idx = 0;
 	while (is_numeric(line[idx]))
@@ -47,7 +59,7 @@ t_status	process_line(uint len, char *line, t_entry *entry)
 	idx++;
 	while (line[idx] == SPACE)
 		idx++;
-	if (line[idx] ==  '\n' || idx >= len - 1)
+	if (line[idx] == '\n' || idx >= len - 1)
 		return (parse_err);
 	entry->value = ft_atoi(value_str);
 	entry->i_value = ft_atoi_arr(value_str, &size);
@@ -56,31 +68,28 @@ t_status	process_line(uint len, char *line, t_entry *entry)
 	return (valid);
 }
 
-t_entry		*load_entries(char *path, t_status *status, uint *size)
+t_entry		*load_entries(char *path, t_status *status, t_uint *size)
 {
 	int		fd;
 	char	*line;
 	t_entry	*entries;
-	uint	line_len;
+	t_uint	line_len;
 
 	fd = open_file(path);
 	if (fd < 0)
-	{
 		*status = fail;
-		return (0);
-	}
 	*size = 0;
 	entries = 0;
-	while (True)
+	while (fd > 0)
 	{
-		entries = ft_realloc_entries(entries, *size, *size + 1);
+		entries = realloc_entries(entries, *size, *size + 1);
 		*status = valid;
 		line = read_line(fd, &line_len, status);
 		if (*status == eof)
 			break ;
 		*status = process_line(line_len, line, &entries[*size]);
 		if (*status != valid)
-			return (entries);
+			break ;
 		(*size)++;
 	}
 	close_file(fd);

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeheo <jeheo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/01 17:09:02 by jeheo             #+#    #+#             */
+/*   Updated: 2020/11/01 22:04:05 by jeheo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_realloc.h"
 
-char	*ft_realloc_str(char *src, char *new_bytes, uint old_len, uint new_len)
+char	*realloc_str(char *src, char *new_bs, t_uint old_len, t_uint new_len)
 {
 	char *dest;
 
@@ -9,15 +21,16 @@ char	*ft_realloc_str(char *src, char *new_bytes, uint old_len, uint new_len)
 		return (0);
 	if (src)
 		ft_strncpy(dest, src, old_len);
-	ft_strncpy(dest + old_len, new_bytes, new_len - old_len);
+	ft_strncpy(dest + old_len, new_bs, new_len - old_len);
 	return (dest);
 }
 
-t_entry *ft_realloc_entries(t_entry *src, uint old_len, uint new_len)
+t_entry	*realloc_entries(t_entry *src, t_uint old_len, t_uint new_len)
 {
-	uint i;
+	t_uint	i;
+	t_entry	*dest;
 
-	t_entry *dest = (t_entry *)malloc(new_len * sizeof(t_entry));
+	dest = (t_entry *)malloc(new_len * sizeof(t_entry));
 	if (!dest)
 		return (0);
 	i = -1;

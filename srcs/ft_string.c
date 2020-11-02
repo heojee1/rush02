@@ -1,9 +1,20 @@
-#include "ft_string.h"
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_string.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeheo <jeheo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/11/01 17:09:06 by jeheo             #+#    #+#             */
+/*   Updated: 2020/11/01 22:07:18 by jeheo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	ft_strncpy(char *dest, char *src, uint n)
+#include "ft_string.h"
+
+void	ft_strncpy(char *dest, char *src, t_uint n)
 {
-	uint i;
+	t_uint i;
 
 	i = 0;
 	while (i < n && src[i])
@@ -18,11 +29,11 @@ void	ft_strncpy(char *dest, char *src, uint n)
 	}
 }
 
-char	*ft_strndup(char *src, uint n)
+char	*ft_strndup(char *src, t_uint n)
 {
-	uint i;
-	uint len;
-	char *dest;
+	t_uint	i;
+	t_uint	len;
+	char	*dest;
 
 	i = -1;
 	len = 0;
@@ -39,9 +50,9 @@ char	*ft_strndup(char *src, uint n)
 	return (dest);
 }
 
-int		ft_strlen(char *str)
+t_uint	ft_strlen(char *str)
 {
-	int len;
+	t_uint len;
 
 	len = 0;
 	while (str[len])
@@ -49,22 +60,30 @@ int		ft_strlen(char *str)
 	return (len);
 }
 
-char	*ft_strcat(char *s1, char *s2)
+char	*ft_strcat(char *s1, char *s2, t_bool need_space)
 {
-	uint s1_len;
-	uint s2_len;
-	char *str;
+	t_uint	s1_len;
+	t_uint	s2_len;
+	char	*str;
 
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	// printf("s1 %s len %u\n", s1, s1_len);
-	// printf("s2 %s len %u\n", s2, s2_len);
-	str = (char *)malloc((s1_len + s2_len + 2) * sizeof(char));
+	str = (char *)malloc((s1_len + s2_len + 1 + need_space) * sizeof(char));
 	if (!str)
 		return (0);
 	ft_strncpy(str, s1, s1_len);
-	str[s1_len] = ' ';
-	ft_strncpy(str + s1_len + 1, s2, s2_len);
-	str[s1_len + s2_len + 1] = '\0';
+	if (need_space)
+		str[s1_len] = ' ';
+	ft_strncpy(str + s1_len + need_space, s2, s2_len);
+	str[s1_len + s2_len + 1 + need_space] = '\0';
 	return (str);
+}
+
+void	ft_putstr(char *str)
+{
+	while (*str)
+	{
+		write(1, str, 1);
+		str++;
+	}
 }
